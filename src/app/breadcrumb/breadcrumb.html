@@ -1,0 +1,5 @@
+<nav class="breadcrumb" [attr.aria-label]="language.translate('breadcrumb.navigationLabel')">
+  <a class="breadcrumb-link" routerLink="/">{{ language.translate('bookSearch.pageTitle') }}</a>
+  <span class="breadcrumb-separator" aria-hidden="true"> | </span>
+  <span class="breadcrumb-current" aria-current="page">{{ currentPageLabel() }}</span>
+</nav>

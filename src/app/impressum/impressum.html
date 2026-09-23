@@ -1,7 +1,7 @@
 <section class="impressum">
-  <h1 class="page-title">{{ language.translate('impressum.pageTitle') }}</h1>
+  <app-breadcrumb [currentPageLabel]="language.translate('impressum.pageTitle')" />
 
-  <a class="back-link" routerLink="/">{{ language.translate('impressum.backToSearch') }}</a>
+  <h1 class="page-title">{{ language.translate('impressum.pageTitle') }}</h1>
 
   <section class="impressum-section">
     <h2 class="section-heading">{{ language.translate('impressum.identityHeading') }}</h2>

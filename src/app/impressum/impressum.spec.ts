@@ -43,19 +43,26 @@ describe('ImpressumPage', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('shows a back-link to the main page, with text following the selected language', () => {
+  it('shows a breadcrumb above the title, linking to the main page, with the Impressum page as current', () => {
     const fixture = createFixture();
     const el = fixture.nativeElement as HTMLElement;
 
-    const link = el.querySelector<HTMLAnchorElement>('.back-link');
-    expect(link).toBeTruthy();
+    const breadcrumb = el.querySelector('app-breadcrumb');
+    const title = el.querySelector('.page-title');
+    expect(breadcrumb).toBeTruthy();
+    const position = breadcrumb!.compareDocumentPosition(title!);
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    const link = breadcrumb?.querySelector<HTMLAnchorElement>('.breadcrumb-link');
     expect(link?.getAttribute('href')).toBe('/');
-    expect(link?.textContent?.trim()).toBe('← Back to search');
+    expect(link?.textContent?.trim()).toBe('Search');
+    expect(breadcrumb?.querySelector('.breadcrumb-current')?.textContent?.trim()).toBe('Imprint');
 
     TestBed.inject(Language).setLanguage('de');
     fixture.detectChanges();
 
-    expect(link?.textContent?.trim()).toBe('← Zurück zur Suche');
+    expect(link?.textContent?.trim()).toBe('Suche');
+    expect(breadcrumb?.querySelector('.breadcrumb-current')?.textContent?.trim()).toBe('Impressum');
   });
 
   it('shows English headings and labels by default, alongside the unchanged fixed data', () => {

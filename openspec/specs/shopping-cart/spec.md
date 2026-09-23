@@ -62,10 +62,10 @@ The system SHALL make the shopping cart icon in the header navigate to the cart 
 - **THEN** activating the cart icon has no effect; it remains a display-only indicator
 
 ### Requirement: Return to the main page from the cart page
-The system SHALL provide a control on the cart page that navigates back to the main page.
+The system SHALL provide a breadcrumb trail on the cart page, shown above the cart page's title, that navigates back to the main page when its main-page link is activated. This replaces a standalone back-link control.
 
 #### Scenario: Back control returns to the main page
-- **WHEN** the user activates the back control on the cart page
+- **WHEN** the user activates the breadcrumb trail's main-page link on the cart page
 - **THEN** the main page is displayed
 
 ### Requirement: Remove book from cart

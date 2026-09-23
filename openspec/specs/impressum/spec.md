@@ -53,8 +53,8 @@ The system SHALL translate the Impressum page's headings and body text (the page
 - **THEN** the operator's full name, postal address, email, phone number, VAT identification number, and the EU ODR platform link's URL remain unchanged
 
 ### Requirement: Return to the main page from the Impressum page
-The system SHALL provide a control on the Impressum page that navigates back to the main page.
+The system SHALL provide a breadcrumb trail on the Impressum page, shown above the Impressum page's title, that navigates back to the main page when its main-page link is activated. This replaces a standalone back-link control.
 
 #### Scenario: Back control returns to the main page
-- **WHEN** the user activates the back control on the Impressum page
+- **WHEN** the user activates the breadcrumb trail's main-page link on the Impressum page
 - **THEN** the main page is displayed

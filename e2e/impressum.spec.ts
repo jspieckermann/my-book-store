@@ -56,12 +56,12 @@ test.describe('impressum', () => {
     await expect(link).toHaveText('Impressum');
   });
 
-  test('the back-link on the Impressum page navigates to the main page', async ({ page }) => {
+  test('the breadcrumb on the Impressum page navigates to the main page', async ({ page }) => {
     await page.goto('/impressum');
-    const backLink = page.locator('.back-link');
-    await expect(backLink).toBeVisible();
+    const breadcrumbLink = page.locator('.breadcrumb-link');
+    await expect(breadcrumbLink).toBeVisible();
 
-    await backLink.click();
+    await breadcrumbLink.click();
 
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator('.page-title')).toHaveText('Search');

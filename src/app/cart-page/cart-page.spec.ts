@@ -35,11 +35,16 @@ describe('CartPage', () => {
 
   const book: BookSummary = { title: 'Dune', price: 24.99 };
 
-  it('renders the back link', () => {
+  it('renders a breadcrumb above the title, with the cart page as the current page', () => {
     const fixture = createFixture([]);
-    const link = (fixture.nativeElement as HTMLElement).querySelector('.back-link');
+    const el = fixture.nativeElement as HTMLElement;
 
-    expect(link).toBeTruthy();
+    const breadcrumb = el.querySelector('app-breadcrumb');
+    const title = el.querySelector('.page-title');
+    expect(breadcrumb).toBeTruthy();
+    expect(breadcrumb?.querySelector('.breadcrumb-current')?.textContent?.trim()).toBe('Your Cart');
+    const position = breadcrumb!.compareDocumentPosition(title!);
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('renders one book card per book in the cart, without an "Add to cart" button', () => {

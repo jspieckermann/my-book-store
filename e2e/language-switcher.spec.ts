@@ -81,14 +81,14 @@ test.describe('language switcher', () => {
 
     await page.locator('.cart').click();
     await expect(page.locator('.page-title')).toHaveText('Ihr Warenkorb');
-    await expect(page.locator('.back-link')).toHaveText('← Zurück zur Suche');
+    await expect(page.locator('.breadcrumb-current')).toHaveText('Ihr Warenkorb');
     await expect(page.locator('.payment-summary')).toContainText('Artikel');
 
     await selectLanguage(page, 'EN');
 
     await expect(toggle).toContainText('EN');
     await expect(page.locator('.page-title')).toHaveText('Your Cart');
-    await expect(page.locator('.back-link')).toHaveText('← Back to search');
+    await expect(page.locator('.breadcrumb-current')).toHaveText('Your Cart');
   });
 
   test('changing the language while results are displayed re-sends the request restricted to the new language and updates the displayed results', async ({

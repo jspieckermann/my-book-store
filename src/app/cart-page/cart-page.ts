@@ -1,12 +1,12 @@
 import { Component, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { Cart } from '../cart/cart';
 import { BookCard } from '../book-card/book-card';
 import { BookRecommendations } from '../book-recommendations/book-recommendations';
+import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Language } from '../language/language';
 
 @Component({
-  imports: [RouterLink, BookCard, BookRecommendations],
+  imports: [BookCard, BookRecommendations, Breadcrumb],
   selector: 'app-cart-page',
   styleUrl: './cart-page.css',
   templateUrl: './cart-page.html',

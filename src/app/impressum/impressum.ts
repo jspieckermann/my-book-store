@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Language } from '../language/language';
 
 @Component({
-  imports: [RouterLink],
+  imports: [Breadcrumb],
   selector: 'app-impressum',
   styleUrl: './impressum.css',
   templateUrl: './impressum.html',

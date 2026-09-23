@@ -121,7 +121,7 @@ test.describe('shopping cart', () => {
     await expect(summary).toHaveText(/1 item · €\d+\.\d{2}/);
     const firstTotalText = await summary.textContent();
 
-    await page.locator('.back-link').click();
+    await page.locator('.breadcrumb-link').click();
     await addBookToCart(page, 'Foundation');
     await page.locator('.cart').click();
 
@@ -137,12 +137,18 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.payment-section')).toHaveCount(0);
   });
 
-  test('the back control returns to the main page', async ({ page }) => {
+  test('the breadcrumb returns to the main page', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
     await page.goto('/cart');
 
-    await page.locator('.back-link').click();
+    const breadcrumb = page.locator('app-breadcrumb');
+    const title = page.locator('.page-title');
+    const breadcrumbBox = await breadcrumb.boundingBox();
+    const titleBox = await title.boundingBox();
+    expect(breadcrumbBox!.y).toBeLessThan(titleBox!.y);
+
+    await page.locator('.breadcrumb-link').click();
 
     await expect(page.locator('.page-title')).toHaveText('Search');
   });
