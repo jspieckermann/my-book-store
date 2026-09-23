@@ -1,10 +1,11 @@
 schema: spec-driven
 
-Definition of Done:
-- Unit-Tests are written: Running and line coverage of 85%
-- e2e-Tests are written: Running and cover most of the requirements (keep it simple)
+operations:
+  apply:
+    guidance:
+      - Unit-Tests are written and running with a line coverage of 85%
+      - e2e-Tests are written and running covering most of the requirements (keep it simple)
+  archive:
+    guidance:
+      - commit to git and name the commit comment <name of the change> where <name of the change> is the placeholder for the current change
 
-On /opsx:archive:
-After successful execution of the /opsx:archive call, 
-commit to git and name the commit with "Implement <name of the change>"
-where <name of the change> is the placeholder for the used name of the change by OpenSpec.
