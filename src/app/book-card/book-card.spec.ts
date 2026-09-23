@@ -15,13 +15,16 @@ describe('BookCard', () => {
     localStorage.removeItem('language');
   });
 
-  function createFixture(book: BookSummary, inputs: { showAddToCart?: boolean; showDelete?: boolean } = {}) {
+  function createFixture(
+    book: BookSummary,
+    inputs: { showAddToCart?: boolean; showDelete?: boolean; cartBooks?: BookSummary[] } = {},
+  ) {
     addMock = vi.fn();
     removeMock = vi.fn();
     userSignal = signal<{ name: string } | null>({ name: 'Ada' });
     TestBed.configureTestingModule({
       providers: [
-        { provide: Cart, useValue: { add: addMock, remove: removeMock } },
+        { provide: Cart, useValue: { add: addMock, remove: removeMock, books: signal(inputs.cartBooks ?? []) } },
         { provide: GoogleAuth, useValue: { user: userSignal } },
       ],
     });
@@ -210,5 +213,29 @@ describe('BookCard', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     expect(el.querySelector('.price')?.textContent?.trim().replace(/\s/g, ' ')).toBe('42,50 €');
+  });
+
+  it('hides the cart quantity badge when the book is not in the cart', () => {
+    const fixture = createFixture(fullBook, { cartBooks: [] });
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.cart-quantity-badge')).toBeNull();
+  });
+
+  it('shows the cart quantity badge with count 1 when one matching-title book is in the cart', () => {
+    const fixture = createFixture(fullBook, { cartBooks: [{ title: 'Dune', price: 24.99 }] });
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.cart-quantity-badge')?.textContent?.trim()).toBe(
+      '1 already in cart',
+    );
+  });
+
+  it('matches by title case-insensitively and trimmed, and counts every matching book in the cart', () => {
+    const fixture = createFixture(fullBook, {
+      cartBooks: [{ title: ' DUNE ', price: 1 }, { title: 'dune', price: 1 }, { title: 'Foundation', price: 1 }],
+    });
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.cart-quantity-badge')?.textContent?.trim()).toBe(
+      '2 already in cart',
+    );
   });
 });

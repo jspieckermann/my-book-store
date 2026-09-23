@@ -146,4 +146,26 @@ test.describe('book recommendations', () => {
     await expect(section).toContainText('Dune Messiah');
     await expect(section).toContainText('Second Foundation');
   });
+
+  test('the cart quantity badge on a recommendation card is hidden until added, then tracks the count', async ({
+    page,
+  }) => {
+    await mockGoogleAuth(page, 'success');
+    await mockGoogleBooksWithRecommendations(
+      page,
+      { title: 'Dune', authors: ['Frank Herbert'] },
+      [{ title: 'Dune Messiah', authors: ['Frank Herbert'] }],
+    );
+    await signInAndAddToCart(page);
+    await page.locator('.cart').click();
+
+    const card = page.locator('app-recommendation-card').first();
+    await expect(card.locator('.cart-quantity-badge')).toHaveCount(0);
+
+    await card.locator('.add-to-cart-button').click();
+    await expect(card.locator('.cart-quantity-badge')).toHaveText('1 already in cart');
+
+    await card.locator('.add-to-cart-button').click();
+    await expect(card.locator('.cart-quantity-badge')).toHaveText('2 already in cart');
+  });
 });

@@ -14,12 +14,12 @@ describe('RecommendationCard', () => {
     localStorage.removeItem('language');
   });
 
-  function createFixture(book: BookSummary) {
+  function createFixture(book: BookSummary, cartBooks: BookSummary[] = []) {
     addMock = vi.fn();
     userSignal = signal<{ name: string } | null>({ name: 'Ada' });
     TestBed.configureTestingModule({
       providers: [
-        { provide: Cart, useValue: { add: addMock } },
+        { provide: Cart, useValue: { add: addMock, books: signal(cartBooks) } },
         { provide: GoogleAuth, useValue: { user: userSignal } },
       ],
     });
@@ -128,5 +128,31 @@ describe('RecommendationCard', () => {
 
     expect(el.querySelector('.recommendation-title')?.textContent).toBe('Dune Messiah');
     expect(el.querySelector('.recommendation-authors')?.textContent).toBe('Frank Herbert');
+  });
+
+  it('hides the cart quantity badge when the book is not in the cart', () => {
+    const fixture = createFixture(fullBook, []);
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.cart-quantity-badge')).toBeNull();
+  });
+
+  it('shows the cart quantity badge with count 1 when one matching-title book is in the cart', () => {
+    const fixture = createFixture(fullBook, [{ title: 'Dune Messiah', price: 19.99 }]);
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.cart-quantity-badge')?.textContent?.trim()).toBe(
+      '1 already in cart',
+    );
+  });
+
+  it('matches by title case-insensitively and trimmed, and counts every matching book in the cart', () => {
+    const fixture = createFixture(fullBook, [
+      { title: ' DUNE MESSIAH ', price: 1 },
+      { title: 'dune messiah', price: 1 },
+      { title: 'Foundation', price: 1 },
+    ]);
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.cart-quantity-badge')?.textContent?.trim()).toBe(
+      '2 already in cart',
+    );
   });
 });

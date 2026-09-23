@@ -65,4 +65,9 @@ export class BookCard {
   protected readonly formattedPrice = computed(() =>
     this.book().price.toLocaleString(this.language.localeCode(), { style: 'currency', currency: 'EUR' }),
   );
+
+  protected readonly cartQuantity = computed(() => {
+    const title = this.book().title?.trim().toLowerCase();
+    return this.cart.books().filter((b) => b.title?.trim().toLowerCase() === title).length;
+  });
 }

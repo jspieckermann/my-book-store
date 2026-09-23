@@ -215,4 +215,23 @@ test.describe('book search', () => {
     await page.locator('.search-button').click();
     await expect(page.locator('.add-to-cart-button')).toBeVisible();
   });
+
+  test('the cart quantity badge is hidden until the book is added, then tracks the count', async ({ page }) => {
+    await mockGoogleBooksSearch(page, { items: [{ title: 'Dune' }] });
+    await mockGoogleAuth(page, 'success');
+    await page.goto('/');
+    await page.locator('.login').click();
+    await expect(page.locator('.user-name')).toBeVisible();
+    await page.locator('.search-input').fill('Dune');
+    await page.locator('.search-button').click();
+
+    const card = page.locator('.book-card').first();
+    await expect(card.locator('.cart-quantity-badge')).toHaveCount(0);
+
+    await card.locator('.add-to-cart-button').click();
+    await expect(card.locator('.cart-quantity-badge')).toHaveText('1 already in cart');
+
+    await card.locator('.add-to-cart-button').click();
+    await expect(card.locator('.cart-quantity-badge')).toHaveText('2 already in cart');
+  });
 });
