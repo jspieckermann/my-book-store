@@ -5,6 +5,7 @@ operations:
     guidance:
       - Unit-Tests are written and running with a line coverage of 85%
       - e2e-Tests are written and running covering most of the requirements (keep it simple)
+      - Linting (npm run lint) passes with zero errors; warnings are non-blocking
   archive:
     guidance:
       - commit to git and name the commit comment <name of the change> where <name of the change> is the placeholder for the current change
