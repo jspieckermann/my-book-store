@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ImpressumPage } from './impressum';
 import { Language } from '../language/language';
 
@@ -8,7 +9,7 @@ describe('ImpressumPage', () => {
   });
 
   function createFixture(locale?: 'en' | 'de') {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     if (locale) {
       TestBed.inject(Language).setLanguage(locale);
     }
@@ -17,7 +18,7 @@ describe('ImpressumPage', () => {
     return fixture;
   }
 
-  function expectRequiredContent(el: HTMLElement): void {
+  function expectFixedData(el: HTMLElement): void {
     const text = el.textContent ?? '';
 
     // Operator identity and address
@@ -34,13 +35,6 @@ describe('ImpressumPage', () => {
 
     // EU ODR link
     expect(el.querySelector('a[href="https://ec.europa.eu/consumers/odr/"]')).toBeTruthy();
-
-    // Consumer dispute-resolution statement
-    expect(text).toContain('nicht bereit und nicht verpflichtet');
-
-    // Liability disclaimer
-    expect(text).toContain('Haftung für Inhalte');
-    expect(text).toContain('Haftung für Links');
   }
 
   it('renders the page', () => {
@@ -49,15 +43,58 @@ describe('ImpressumPage', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('shows the required content when the language defaults to English', () => {
+  it('shows a back-link to the main page, with text following the selected language', () => {
     const fixture = createFixture();
+    const el = fixture.nativeElement as HTMLElement;
 
-    expectRequiredContent(fixture.nativeElement as HTMLElement);
+    const link = el.querySelector<HTMLAnchorElement>('.back-link');
+    expect(link).toBeTruthy();
+    expect(link?.getAttribute('href')).toBe('/');
+    expect(link?.textContent?.trim()).toBe('← Back to search');
+
+    TestBed.inject(Language).setLanguage('de');
+    fixture.detectChanges();
+
+    expect(link?.textContent?.trim()).toBe('← Zurück zur Suche');
   });
 
-  it('shows the same required content, unchanged, after switching the language to German', () => {
-    const fixture = createFixture('de');
+  it('shows English headings and labels by default, alongside the unchanged fixed data', () => {
+    const fixture = createFixture();
+    const el = fixture.nativeElement as HTMLElement;
+    const text = el.textContent ?? '';
 
-    expectRequiredContent(fixture.nativeElement as HTMLElement);
+    expect(text).toContain('Imprint');
+    expect(text).toContain('Information pursuant to § 5 DDG');
+    expect(text).toContain('Germany');
+    expect(text).toContain('Contact');
+    expect(text).toContain('Email:');
+    expect(text).toContain('Phone:');
+    expect(text).toContain('VAT Identification Number');
+    expect(text).toContain('EU Dispute Resolution');
+    expect(text).toContain('Consumer Dispute Resolution');
+    expect(text).toContain('not willing and not obligated');
+    expect(text).toContain('Liability for Content');
+    expect(text).toContain('Liability for Links');
+    expectFixedData(el);
+  });
+
+  it('shows German headings and labels after switching to German, alongside the same unchanged fixed data', () => {
+    const fixture = createFixture('de');
+    const el = fixture.nativeElement as HTMLElement;
+    const text = el.textContent ?? '';
+
+    expect(text).toContain('Impressum');
+    expect(text).toContain('Angaben gemäß § 5 DDG');
+    expect(text).toContain('Deutschland');
+    expect(text).toContain('Kontakt');
+    expect(text).toContain('E-Mail:');
+    expect(text).toContain('Telefon:');
+    expect(text).toContain('Umsatzsteuer-ID');
+    expect(text).toContain('EU-Streitschlichtung');
+    expect(text).toContain('Verbraucherstreitbeilegung');
+    expect(text).toContain('nicht bereit und nicht verpflichtet');
+    expect(text).toContain('Haftung für Inhalte');
+    expect(text).toContain('Haftung für Links');
+    expectFixedData(el);
   });
 });

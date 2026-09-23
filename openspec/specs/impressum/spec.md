@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines the app's legal notice (Impressum) page: its route, required content sections, and the rule that its content is not subject to the app's language switching.
+Defines the app's legal notice (Impressum) page: its route, required content sections, and how its content follows the app's language switching.
 
 ## Requirements
 
@@ -33,13 +33,28 @@ The system SHALL display a legal notice ("Impressum") page at a dedicated route,
 - **WHEN** the Impressum page is viewed
 - **THEN** it displays a liability disclaimer covering both the site's own content and links to external sites
 
-### Requirement: Impressum content is not translated
-The system SHALL render the Impressum page's content in German regardless of the application's currently selected UI language.
+### Requirement: Impressum content follows the selected UI language
+The system SHALL translate the Impressum page's headings and body text (the page title, section headings, labels, and explanatory/disclaimer text) to the application's currently selected UI language, consistent with the rest of the application. The operator's fixed identity and legal data — full name, postal address, email, phone number, and VAT identification number — and the EU ODR platform link's URL SHALL remain unchanged regardless of the selected language.
 
-#### Scenario: Impressum stays German while English is the selected UI language
-- **WHEN** English is the currently selected UI language and the user views the Impressum page
-- **THEN** the Impressum page's content is displayed in German, not translated to English
+#### Scenario: Impressum content is shown in German
+- **WHEN** the current UI language is German and the user views the Impressum page
+- **THEN** the page's headings and body text are displayed in German
 
-#### Scenario: Switching the UI language does not change the Impressum's content
+#### Scenario: Impressum content is shown in English
+- **WHEN** the current UI language is English and the user views the Impressum page
+- **THEN** the page's headings and body text are displayed in English
+
+#### Scenario: Switching the language while viewing the Impressum updates its content
 - **WHEN** the user changes the selected UI language while viewing the Impressum page
-- **THEN** the Impressum page's content remains unchanged, in German
+- **THEN** the page's headings and body text update to the newly selected language immediately
+
+#### Scenario: Fixed identity and legal data are unaffected by the selected language
+- **WHEN** the user changes the selected UI language while viewing the Impressum page
+- **THEN** the operator's full name, postal address, email, phone number, VAT identification number, and the EU ODR platform link's URL remain unchanged
+
+### Requirement: Return to the main page from the Impressum page
+The system SHALL provide a control on the Impressum page that navigates back to the main page.
+
+#### Scenario: Back control returns to the main page
+- **WHEN** the user activates the back control on the Impressum page
+- **THEN** the main page is displayed

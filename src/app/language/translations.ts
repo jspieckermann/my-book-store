@@ -32,6 +32,28 @@ export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
     'cartPage.empty': 'Your cart is empty',
     'cartPage.item': 'item',
     'cartPage.items': 'items',
+    'impressum.pageTitle': 'Imprint',
+    'impressum.backToSearch': '← Back to search',
+    'impressum.identityHeading': 'Information pursuant to § 5 DDG',
+    'impressum.country': 'Germany',
+    'impressum.contactHeading': 'Contact',
+    'impressum.emailLabel': 'Email:',
+    'impressum.phoneLabel': 'Phone:',
+    'impressum.vatHeading': 'VAT Identification Number',
+    'impressum.vatExplanation': 'VAT identification number pursuant to § 27a of the German VAT Act:',
+    'impressum.odrHeading': 'EU Dispute Resolution',
+    'impressum.odrExplanation':
+      'The European Commission provides a platform for online dispute resolution (ODR):',
+    'impressum.consumerDisputeHeading': 'Consumer Dispute Resolution',
+    'impressum.consumerDisputeStatement':
+      'We are not willing and not obligated to participate in dispute resolution proceedings before a consumer arbitration board.',
+    'impressum.liabilityHeading': 'Disclaimer',
+    'impressum.liabilityContentSubheading': 'Liability for Content',
+    'impressum.liabilityContentText':
+      'The content of this page has been created with the utmost care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content.',
+    'impressum.liabilityLinksSubheading': 'Liability for Links',
+    'impressum.liabilityLinksText':
+      'This page contains links to external third-party websites over whose content we have no control. The respective provider is always responsible for the content of the linked pages.',
   },
   de: {
     'header.bookLogo': 'Buch-Logo',
@@ -64,5 +86,26 @@ export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
     'cartPage.empty': 'Ihr Warenkorb ist leer',
     'cartPage.item': 'Artikel',
     'cartPage.items': 'Artikel',
+    'impressum.pageTitle': 'Impressum',
+    'impressum.backToSearch': '← Zurück zur Suche',
+    'impressum.identityHeading': 'Angaben gemäß § 5 DDG',
+    'impressum.country': 'Deutschland',
+    'impressum.contactHeading': 'Kontakt',
+    'impressum.emailLabel': 'E-Mail:',
+    'impressum.phoneLabel': 'Telefon:',
+    'impressum.vatHeading': 'Umsatzsteuer-ID',
+    'impressum.vatExplanation': 'Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:',
+    'impressum.odrHeading': 'EU-Streitschlichtung',
+    'impressum.odrExplanation': 'Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:',
+    'impressum.consumerDisputeHeading': 'Verbraucherstreitbeilegung',
+    'impressum.consumerDisputeStatement':
+      'Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.',
+    'impressum.liabilityHeading': 'Haftungsausschluss',
+    'impressum.liabilityContentSubheading': 'Haftung für Inhalte',
+    'impressum.liabilityContentText':
+      'Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.',
+    'impressum.liabilityLinksSubheading': 'Haftung für Links',
+    'impressum.liabilityLinksText':
+      'Diese Seite enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.',
   },
 };

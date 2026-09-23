@@ -30,12 +30,40 @@ test.describe('impressum', () => {
     await expect(page.locator('a[href="https://ec.europa.eu/consumers/odr/"]')).toBeVisible();
   });
 
-  test('the Impressum page content stays German after switching the UI language to German', async ({ page }) => {
+  test('switching the UI language to German translates the Impressum headings and labels, while the fixed data stays unchanged', async ({
+    page,
+  }) => {
     await page.goto('/impressum');
-    const impressumText = await page.locator('.impressum').textContent();
+    await expect(page.locator('.impressum')).toContainText('Imprint');
+    await expect(page.locator('.impressum')).toContainText('Contact');
 
     await selectLanguage(page, 'DE');
 
-    await expect(page.locator('.impressum')).toHaveText(impressumText ?? '');
+    await expect(page.locator('.impressum')).toContainText('Impressum');
+    await expect(page.locator('.impressum')).toContainText('Kontakt');
+    await expect(page.locator('.impressum')).toContainText('Max Mustermann');
+    await expect(page.locator('.impressum')).toContainText('DE123456789');
+    await expect(page.locator('a[href="https://ec.europa.eu/consumers/odr/"]')).toBeVisible();
+  });
+
+  test("the footer's Impressum link text follows the selected UI language", async ({ page }) => {
+    await page.goto('/');
+    const link = page.locator('.impressum-link');
+    await expect(link).toHaveText('Imprint');
+
+    await selectLanguage(page, 'DE');
+
+    await expect(link).toHaveText('Impressum');
+  });
+
+  test('the back-link on the Impressum page navigates to the main page', async ({ page }) => {
+    await page.goto('/impressum');
+    const backLink = page.locator('.back-link');
+    await expect(backLink).toBeVisible();
+
+    await backLink.click();
+
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator('.page-title')).toHaveText('Search');
   });
 });

@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Language } from '../language/language';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-impressum',
   styleUrl: './impressum.css',
   templateUrl: './impressum.html',
 })
-export class ImpressumPage {}
+export class ImpressumPage {
+  protected readonly language = inject(Language);
+}
