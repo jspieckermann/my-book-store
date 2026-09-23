@@ -1,6 +1,6 @@
 import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Language } from '../language/language';
 
@@ -74,6 +74,33 @@ export class GoogleBooks {
   search(query: string, page: number): Observable<SearchResultsPage> {
     const cleaned = query.replace(/[-\s]/g, '');
     const q = isIsbnFormat(query) ? `isbn:${cleaned}` : query;
+    return this.fetchVolumes(q, page);
+  }
+
+  searchByAuthors(authors: string[]): Observable<SearchResultsPage> {
+    const requests = authors.map((author) => this.fetchVolumes(`inauthor:"${author}"`, 1));
+    return forkJoin(requests).pipe(
+      map((pages) => {
+        const seenTitles = new Set<string>();
+        const books: BookSummary[] = [];
+        for (const page of pages) {
+          for (const book of page.books) {
+            const key = book.title?.trim().toLowerCase();
+            if (key) {
+              if (seenTitles.has(key)) {
+                continue;
+              }
+              seenTitles.add(key);
+            }
+            books.push(book);
+          }
+        }
+        return { books, totalItems: books.length };
+      }),
+    );
+  }
+
+  private fetchVolumes(q: string, page: number): Observable<SearchResultsPage> {
     const params: Record<string, string> = {
       q,
       startIndex: String((page - 1) * PAGE_SIZE),

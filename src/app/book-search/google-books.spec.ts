@@ -187,6 +187,56 @@ describe('GoogleBooks', () => {
     req.flush({ items: [], totalItems: 0 });
   });
 
+  it('searchByAuthors issues one quoted inauthor request per author, not an OR-joined query', () => {
+    // The Google Books API does not reliably support OR-combining `inauthor:` clauses in a
+    // single query (verified against the live API: it returns irrelevant or zero results) —
+    // see design.md's revision on this. One request per author is required instead.
+    googleBooks.searchByAuthors(['Frank Herbert', 'Brian Herbert']).subscribe();
+
+    const requests = httpMock.match(() => true);
+    expect(requests.map((req) => req.request.params.get('q')).sort()).toEqual(
+      ['inauthor:"Brian Herbert"', 'inauthor:"Frank Herbert"'].sort(),
+    );
+    requests.forEach((req) => req.flush({ items: [], totalItems: 0 }));
+  });
+
+  it('searchByAuthors with a single author still issues exactly one request', () => {
+    googleBooks.searchByAuthors(['Frank Herbert']).subscribe();
+
+    const req = httpMock.expectOne(() => true);
+    expect(req.request.params.get('q')).toBe('inauthor:"Frank Herbert"');
+    req.flush({ items: [], totalItems: 0 });
+  });
+
+  it('searchByAuthors merges results from every author request and dedupes by title', () => {
+    let result: { books: { title?: string }[]; totalItems: number } | undefined;
+    googleBooks.searchByAuthors(['Frank Herbert', 'Brian Herbert']).subscribe((page) => (result = page));
+
+    const requests = httpMock.match(() => true);
+    const frankReq = requests.find((req) => req.request.params.get('q') === 'inauthor:"Frank Herbert"')!;
+    const brianReq = requests.find((req) => req.request.params.get('q') === 'inauthor:"Brian Herbert"')!;
+    frankReq.flush({ items: [{ volumeInfo: { title: 'Dune' } }, { volumeInfo: { title: 'Shared Title' } }], totalItems: 2 });
+    brianReq.flush({ items: [{ volumeInfo: { title: 'shared title' } }, { volumeInfo: { title: 'Hunters of Dune' } }], totalItems: 2 });
+
+    expect(result?.books.map((book) => book.title)).toEqual(['Dune', 'Shared Title', 'Hunters of Dune']);
+    expect(result?.totalItems).toBe(3);
+  });
+
+  it('searchByAuthors includes langRestrict and the configured API key on every request, same as search()', () => {
+    environment.googleBooksApiKey = 'test-api-key';
+    TestBed.inject(Language).setLanguage('de');
+
+    googleBooks.searchByAuthors(['Frank Herbert', 'Brian Herbert']).subscribe();
+
+    const requests = httpMock.match(() => true);
+    expect(requests).toHaveLength(2);
+    for (const req of requests) {
+      expect(req.request.params.get('langRestrict')).toBe('de');
+      expect(req.request.params.get('key')).toBe('test-api-key');
+      req.flush({ items: [], totalItems: 0 });
+    }
+  });
+
   it('maps a response with no items to an empty result', () => {
     let result: { books: unknown[]; totalItems: number } | undefined;
     googleBooks.search('anything', 1).subscribe((page) => (result = page));

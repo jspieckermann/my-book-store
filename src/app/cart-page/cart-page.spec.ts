@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { CartPage } from './cart-page';
 import { Cart } from '../cart/cart';
 import { GoogleAuth } from '../google-auth/google-auth';
-import { BookSummary } from '../book-search/google-books';
+import { BookSummary, GoogleBooks } from '../book-search/google-books';
 
 describe('CartPage', () => {
   function createFixture(books: BookSummary[]) {
@@ -22,6 +23,9 @@ describe('CartPage', () => {
           },
         },
         { provide: GoogleAuth, useValue: { user: signal({ name: 'Ada' }) } },
+        // BookRecommendations (rendered when the cart is non-empty) injects GoogleBooks —
+        // stub it so these tests never issue a real network request.
+        { provide: GoogleBooks, useValue: { searchByAuthors: vi.fn(() => of({ books: [], totalItems: 0 })) } },
       ],
     });
     const fixture = TestBed.createComponent(CartPage);
