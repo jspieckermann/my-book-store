@@ -1,0 +1,63 @@
+<section class="book-search">
+  <h1 class="page-title">{{ language.translate('bookSearch.pageTitle') }}</h1>
+
+  <form class="filter-form" (ngSubmit)="search()">
+    <input
+      type="text"
+      class="search-input"
+      [placeholder]="language.translate('bookSearch.searchPlaceholder')"
+      [attr.aria-label]="language.translate('bookSearch.searchPlaceholder')"
+      [value]="query()"
+      (input)="onQueryInput($event)"
+    />
+    <button type="submit" class="search-button" [disabled]="isSearchDisabled()">
+      {{ language.translate('bookSearch.searchButton') }}
+    </button>
+  </form>
+
+  @if (state().kind === 'loading') {
+    <p class="status status-loading" role="status">{{ language.translate('bookSearch.searching') }}</p>
+  }
+
+  @if (state().kind === 'error') {
+    <p class="status status-error" role="alert">{{ language.translate('bookSearch.searchFailed') }}</p>
+  }
+
+  @if (state().kind === 'not-found') {
+    <p class="status status-not-found">{{ language.translate('bookSearch.bookNotFound') }}</p>
+  }
+
+  @if (state(); as current) {
+    @if (current.kind === 'found') {
+      <ul class="results-list">
+        @for (book of current.books; track book) {
+          <li class="book-card">
+            <app-book-card [book]="book" />
+          </li>
+        }
+      </ul>
+
+      @if (current.totalItems > 10) {
+        <nav class="pagination" [attr.aria-label]="language.translate('bookSearch.paginationNav')">
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="!hasPreviousPage()"
+            (click)="goToPreviousPage()"
+          >
+            {{ language.translate('bookSearch.previous') }}
+          </button>
+          <span class="pagination-page">{{ language.translate('bookSearch.pageOf', { page: page(), total: totalPages() }) }}</span>
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="!hasNextPage()"
+            (click)="goToNextPage()"
+          >
+            {{ language.translate('bookSearch.next') }}
+          </button>
+        </nav>
+      }
+    }
+  }
+</section>

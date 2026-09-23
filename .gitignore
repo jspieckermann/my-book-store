@@ -42,3 +42,11 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Local environment configuration (contains local secrets, e.g. API keys)
+/src/environments/environment.ts
+
+# Playwright
+/playwright-report/
+/test-results/
+/blob-report/

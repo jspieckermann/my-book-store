@@ -1,0 +1,205 @@
+:host {
+  display: contents;
+}
+
+.rating {
+  position: absolute;
+  top: clamp(0.5rem, 2vw, 0.75rem);
+  right: clamp(0.5rem, 2vw, 0.75rem);
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.rating-star {
+  width: clamp(0.875rem, 2vw, 1.125rem);
+  height: clamp(0.875rem, 2vw, 1.125rem);
+  color: var(--color-border);
+}
+
+.rating-star.filled {
+  color: var(--color-warning);
+}
+
+.rating-count {
+  margin-left: 0.125rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  line-height: var(--text-small--line-height);
+  color: var(--color-text-muted);
+}
+
+.book-cover {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: clamp(5rem, 20vw, 8rem);
+  height: auto;
+  border-radius: 0.375rem;
+  object-fit: contain;
+}
+
+.book-details {
+  flex: 1 1 16rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.625rem, 1.5vw, 0.875rem);
+}
+
+:host:has(.rating) .book-details {
+  padding-right: clamp(5rem, 22vw, 7rem);
+}
+
+.book-summary {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.375rem, 1vw, 0.5rem);
+  margin: 0;
+}
+
+.book-attribute {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+}
+
+.book-attribute dt {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-heading);
+}
+
+.book-attribute dd {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.price {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.0625rem, 3vw, 1.375rem);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.book-attribute dd.description-collapsed-fade {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - var(--text-body--line-height) * 1em / 2),
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - var(--text-body--line-height) * 1em / 2),
+    rgba(0, 0, 0, 0.05) 100%
+  );
+}
+
+.add-to-cart-button {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.add-to-cart-button:hover {
+  filter: brightness(1.1);
+}
+
+.add-to-cart-button:active {
+  filter: brightness(0.9);
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .add-to-cart-button:active {
+    transform: none;
+  }
+}
+
+.delete-button {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.delete-button:hover {
+  filter: brightness(1.1);
+}
+
+.delete-button:active {
+  filter: brightness(0.9);
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delete-button:active {
+    transform: none;
+  }
+}
+
+.expand-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-basis: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  cursor: pointer;
+  text-decoration: none;
+  transform-origin: left center;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.expand-button:hover {
+  text-decoration: underline;
+  filter: brightness(1.1);
+}
+
+.expand-button:active {
+  filter: brightness(0.9);
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expand-button:active {
+    transform: none;
+  }
+}
+
+.action-icon {
+  width: clamp(1.25rem, 2.5vw, 1.5rem);
+  height: clamp(1.25rem, 2.5vw, 1.5rem);
+  transition: transform 0.15s ease;
+}
+
+.action-icon.expanded {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-icon {
+    transition: none;
+  }
+}

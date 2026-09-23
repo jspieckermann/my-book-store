@@ -1,0 +1,5 @@
+schema: spec-driven
+
+Definition of Done:
+- Unit-Tests are written: Running and line coverage of 85%
+- e2e-Tests are written: Running and cover most of the requirements (keep it simple)

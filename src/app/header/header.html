@@ -1,0 +1,160 @@
+<header class="header">
+  <a class="brand" routerLink="/">
+    <svg
+      class="logo"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      role="img"
+      aria-label="Book logo"
+    >
+      <path
+        d="M12 6.5c-1.6-1.2-3.7-1.8-5.8-1.8-.7 0-1.4.06-2.1.2v13c.7-.14 1.4-.2 2.1-.2 2.1 0 4.2.6 5.8 1.8m0-13c1.6-1.2 3.7-1.8 5.8-1.8.7 0 1.4.06 2.1.2v13c-.7-.14-1.4-.2-2.1-.2-2.1 0-4.2.6-5.8 1.8m0-13v13"
+      />
+    </svg>
+    <span class="title">My-Book-Store</span>
+  </a>
+
+  <div class="header-actions">
+    <div class="header-actions-row header-actions-row-top">
+      <div class="language-switcher" (keydown.escape)="closeLanguageMenu()">
+        <button
+          type="button"
+          class="language-switcher-toggle"
+          [attr.aria-haspopup]="true"
+          [attr.aria-expanded]="languageMenuOpen()"
+          [attr.aria-label]="language.translate('header.languageSelector')"
+          (click)="toggleLanguageMenu()"
+        >
+          <span>{{ language.current() === 'de' ? '🇩🇪 DE' : '🇬🇧 EN' }}</span>
+          <svg
+            class="language-switcher-caret"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        @if (languageMenuOpen()) {
+          <div class="language-switcher-menu" role="listbox" [attr.aria-label]="language.translate('header.languageSelector')">
+            <button
+              type="button"
+              role="option"
+              class="language-switcher-option"
+              [class.selected]="language.current() === 'en'"
+              [attr.aria-selected]="language.current() === 'en'"
+              (click)="selectLanguage('en')"
+            >
+              🇬🇧 EN
+            </button>
+            <button
+              type="button"
+              role="option"
+              class="language-switcher-option"
+              [class.selected]="language.current() === 'de'"
+              [attr.aria-selected]="language.current() === 'de'"
+              (click)="selectLanguage('de')"
+            >
+              🇩🇪 DE
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="header-actions-row header-actions-row-bottom">
+      @if (googleAuth.user()) {
+        @if (cart.count() > 0) {
+          <a class="cart" routerLink="/cart">
+            <svg
+              class="cart-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              role="img"
+              [attr.aria-label]="language.translate('header.shoppingCart')"
+            >
+              <circle cx="9" cy="20" r="1" />
+              <circle cx="18" cy="20" r="1" />
+              <path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L21 8H6" />
+            </svg>
+            <span class="cart-badge">{{ cart.count() }}</span>
+          </a>
+        } @else {
+          <span class="cart">
+            <svg
+              class="cart-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              role="img"
+              [attr.aria-label]="language.translate('header.shoppingCart')"
+            >
+              <circle cx="9" cy="20" r="1" />
+              <circle cx="18" cy="20" r="1" />
+              <path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L21 8H6" />
+            </svg>
+          </span>
+        }
+      }
+
+      @if (googleAuth.user(); as user) {
+        <span class="user-name">{{ user.name }}</span>
+        <button type="button" class="logout" [attr.aria-label]="language.translate('header.signOut')" (click)="googleAuth.logout()">
+          <svg
+            class="logout-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="img"
+            [attr.aria-label]="language.translate('header.signOut')"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </button>
+      } @else {
+        <button type="button" class="login" (click)="googleAuth.login()">
+          <svg
+            class="login-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="img"
+            [attr.aria-label]="language.translate('header.logIn')"
+          >
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-3.9 3.6-7 8-7s8 3.1 8 7" />
+          </svg>
+        </button>
+      }
+    </div>
+  </div>
+</header>

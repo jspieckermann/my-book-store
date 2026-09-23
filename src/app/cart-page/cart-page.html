@@ -1,0 +1,22 @@
+<section class="cart-page">
+  <h1 class="page-title">{{ language.translate('cartPage.pageTitle') }}</h1>
+
+  <a class="back-link" routerLink="/">{{ language.translate('cartPage.backToSearch') }}</a>
+
+  @if (cart.books().length > 0) {
+    <ul class="results-list">
+      @for (book of cart.books(); track book) {
+        <li class="book-card">
+          <app-book-card [book]="book" [showAddToCart]="false" [showDelete]="true" />
+        </li>
+      }
+    </ul>
+
+    <section class="payment-section">
+      <p class="payment-summary">{{ itemCountLabel() }} · {{ formattedTotalPrice() }}</p>
+      <button type="button" class="paypal-button">PayPal</button>
+    </section>
+  } @else {
+    <p class="status">{{ language.translate('cartPage.empty') }}</p>
+  }
+</section>

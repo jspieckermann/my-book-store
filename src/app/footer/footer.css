@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: clamp(0.5rem, 1.5vw, 0.75rem);
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.version {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  line-height: var(--text-small--line-height);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
