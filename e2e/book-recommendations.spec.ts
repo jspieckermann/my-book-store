@@ -50,12 +50,14 @@ async function mockGoogleBooksByExactQuery(page: Page, responses: Record<string,
 }
 
 test.describe('book recommendations', () => {
+  // covers: book-recommendations > Recommendations section visibility > Section hidden when the cart is empty
   test('the section is absent on an empty cart', async ({ page }) => {
     await page.goto('/cart');
 
     await expect(page.locator('.book-recommendations')).toHaveCount(0);
   });
 
+  // covers: book-recommendations > Recommendations section visibility > Section shown when the cart has books and recommendations are available
   test('the section appears with recommended books after adding a book to the cart', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await mockGoogleBooksWithRecommendations(
@@ -71,6 +73,7 @@ test.describe('book recommendations', () => {
     await expect(page.locator('.book-recommendations')).toContainText('Dune Messiah');
   });
 
+  // covers: book-recommendations > Adding a recommended book to the cart > Activating a recommendation's add-to-cart control adds it to the cart
   test("activating a recommendation's add-to-cart control increases the cart count", async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await mockGoogleBooksWithRecommendations(
@@ -87,6 +90,10 @@ test.describe('book recommendations', () => {
     await expect(page.locator('.payment-summary')).toContainText('2 items');
   });
 
+  // covers: book-recommendations > Paging through recommendations without scrollbars > Next control reveals the next window of recommendations
+  // covers: book-recommendations > Paging through recommendations without scrollbars > Previous control reveals the prior window of recommendations
+  // covers: book-recommendations > Paging through recommendations without scrollbars > Previous control disabled on the first window
+  // covers: book-recommendations > Paging through recommendations without scrollbars > Next control disabled on the last window
   test('Previous/Next controls page through recommendations and disable correctly at the ends', async ({ page }) => {
     const recommendationItems = Array.from({ length: 6 }, (_, i) => ({
       title: `Recommendation ${i + 1}`,
@@ -116,6 +123,7 @@ test.describe('book recommendations', () => {
     await expect(previousButton).toBeDisabled();
   });
 
+  // covers: book-recommendations > Recommendations are fetched by the cart's authors > One request per author, merged into one result
   test('shows recommendations from every author when the cart has books by two different authors', async ({ page }) => {
     // Regression test: Google Books does not support OR-combining `inauthor:` clauses in a
     // single query (see design.md), so a cart with two distinct authors previously produced
@@ -147,6 +155,9 @@ test.describe('book recommendations', () => {
     await expect(section).toContainText('Second Foundation');
   });
 
+  // covers: book-recommendations > Per-book cart quantity badge on recommendation card > Badge hidden when the recommended book is not in the cart
+  // covers: book-recommendations > Per-book cart quantity badge on recommendation card > Badge shows the current count after the recommended book is added
+  // covers: book-recommendations > Per-book cart quantity badge on recommendation card > Badge count increases with each activation
   test('the cart quantity badge on a recommendation card is hidden until added, then tracks the count', async ({
     page,
   }) => {

@@ -23,6 +23,8 @@ async function selectLanguage(page: Page, code: 'EN' | 'DE'): Promise<void> {
 }
 
 test.describe('language switcher', () => {
+  // covers: localization > Language switcher control > Control visible when signed out
+  // covers: localization > Language switcher control > Control visible when signed in
   test('the selector is visible signed out and signed in', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await page.goto('/');
@@ -33,6 +35,8 @@ test.describe('language switcher', () => {
     await expect(page.locator('.language-switcher')).toBeVisible();
   });
 
+  // covers: localization > Language switcher control > Control lists both languages as flag + code
+  // covers: localization > Default language > First visit defaults to English
   test('shows a flag + code option for each language, English selected by default, and closes on outside click', async ({
     page,
   }) => {
@@ -53,6 +57,8 @@ test.describe('language switcher', () => {
     await expect(page.locator('.language-switcher-menu')).toBeHidden();
   });
 
+  // covers: localization > Switching the language > Selecting German switches the language
+  // covers: localization > Switching the language > Selecting English switches back
   test('switching to German translates the header, search page, a result card, and the cart page, then switches back', async ({
     page,
   }) => {
@@ -91,6 +97,8 @@ test.describe('language switcher', () => {
     await expect(page.locator('.breadcrumb-current')).toHaveText('Your Cart');
   });
 
+  // covers: localization > Book search results reflect the selected language via the API, not machine translation > A search performed in German requests German-language results
+  // covers: localization > Book search results reflect the selected language via the API, not machine translation > Changing the language while viewing results re-fetches them
   test('changing the language while results are displayed re-sends the request restricted to the new language and updates the displayed results', async ({
     page,
   }) => {
@@ -110,6 +118,7 @@ test.describe('language switcher', () => {
     await expect(page.locator('.book-card')).toContainText('Dune');
   });
 
+  // covers: localization > Language persists across reloads > Selected language survives a reload
   test('the selected language survives a page reload', async ({ page }) => {
     await page.goto('/');
     await selectLanguage(page, 'DE');

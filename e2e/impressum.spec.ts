@@ -6,6 +6,8 @@ async function selectLanguage(page: Page, code: 'EN' | 'DE'): Promise<void> {
 }
 
 test.describe('impressum', () => {
+  // covers: app-footer > Footer content > Footer link navigates to the Impressum page
+  // covers: impressum > Impressum page content > Impressum page is reachable
   test('the footer Impressum link is visible on the main page and the cart page, and navigates to /impressum', async ({
     page,
   }) => {
@@ -22,6 +24,9 @@ test.describe('impressum', () => {
     await expect(page).toHaveURL(/\/impressum$/);
   });
 
+  // covers: impressum > Impressum page content > Operator identity and contact details are shown
+  // covers: impressum > Impressum page content > VAT identification number is shown
+  // covers: impressum > Impressum page content > EU dispute resolution link is shown
   test('the Impressum page displays the operator name, the EU ODR link, and the VAT ID', async ({ page }) => {
     await page.goto('/impressum');
 
@@ -30,6 +35,10 @@ test.describe('impressum', () => {
     await expect(page.locator('a[href="https://ec.europa.eu/consumers/odr/"]')).toBeVisible();
   });
 
+  // covers: impressum > Impressum content follows the selected UI language > Impressum content is shown in English
+  // covers: impressum > Impressum content follows the selected UI language > Impressum content is shown in German
+  // covers: impressum > Impressum content follows the selected UI language > Switching the language while viewing the Impressum updates its content
+  // covers: impressum > Impressum content follows the selected UI language > Fixed identity and legal data are unaffected by the selected language
   test('switching the UI language to German translates the Impressum headings and labels, while the fixed data stays unchanged', async ({
     page,
   }) => {
@@ -46,6 +55,7 @@ test.describe('impressum', () => {
     await expect(page.locator('a[href="https://ec.europa.eu/consumers/odr/"]')).toBeVisible();
   });
 
+  // covers: localization > Switching the language > Selecting German switches the language
   test("the footer's Impressum link text follows the selected UI language", async ({ page }) => {
     await page.goto('/');
     const link = page.locator('.impressum-link');
@@ -56,6 +66,7 @@ test.describe('impressum', () => {
     await expect(link).toHaveText('Impressum');
   });
 
+  // covers: impressum > Return to the main page from the Impressum page > Back control returns to the main page
   test('the breadcrumb on the Impressum page navigates to the main page', async ({ page }) => {
     await page.goto('/impressum');
     const breadcrumbLink = page.locator('.breadcrumb-link');

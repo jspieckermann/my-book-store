@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('app shell (header, footer, theming, page titles)', () => {
+  // covers: app-header > Header content > Header renders on load
+  // covers: app-header > Header content > Title text is exact
   test('header renders the book logo and title on load', async ({ page }) => {
     await page.goto('/');
 
@@ -8,6 +10,10 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     await expect(page.locator('.title')).toHaveText('My-Book-Store');
   });
 
+  // covers: app-header > Header content > Activating the logo or title navigates to the main page
+  // covers: app-header > Header content > Logo and title form a single link
+  // covers: book-search > Page title > Page title visible on the main page
+  // covers: shopping-cart > Cart page title > Page title visible on the cart page
   test('the header logo and title are a single link that navigates to the main page', async ({ page }) => {
     await page.goto('/cart');
     await expect(page.locator('.page-title')).toHaveText('Your Cart');
@@ -22,6 +28,8 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     await expect(page.locator('.page-title')).toHaveText('Search');
   });
 
+  // covers: app-footer > Footer content > Footer renders on load
+  // covers: app-footer > Footer not sticky > Footer scrolls with page content
   test('footer renders "v1.0" and is not sticky/fixed', async ({ page }) => {
     await page.goto('/');
 
@@ -31,6 +39,8 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     expect(['fixed', 'sticky']).not.toContain(position);
   });
 
+  // covers: theming > Dark theme applied by default > App loads in dark theme
+  // covers: theming > No theme toggle in this change > No toggle control present
   test('page loads in a dark theme with no theme-toggle control', async ({ page }) => {
     await page.goto('/');
 
@@ -41,6 +51,8 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     await expect(page.locator('[aria-label*="theme" i]')).toHaveCount(0);
   });
 
+  // covers: book-search > Page title > Page title visible on the main page
+  // covers: shopping-cart > Cart page title > Page title visible on the cart page
   test('shows the "Search" page title on the main page and "Your Cart" on the cart page', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('.page-title')).toHaveText('Search');
@@ -49,6 +61,8 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     await expect(page.locator('.page-title')).toHaveText('Your Cart');
   });
 
+  // covers: app-header > Responsive layout > Narrow viewport
+  // covers: app-footer > Responsive layout > Narrow viewport
   test('remains fully visible with no horizontal scroll at a narrow viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
@@ -64,6 +78,8 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 
+  // covers: theming > Interactive control feedback > Hovering an interactive control shows a visible hover state
+  // covers: theming > Interactive control feedback > Pressing an interactive control shows a visible pressed state
   test('shows visible hover and press feedback on an interactive control', async ({ page }) => {
     await page.goto('/');
     await page.locator('.search-input').fill('Dune');
@@ -86,6 +102,7 @@ test.describe('app shell (header, footer, theming, page titles)', () => {
     expect(activeTransform).not.toBe('none');
   });
 
+  // covers: theming > Interactive control feedback > Reduced motion preference disables motion-based feedback but keeps a visual indication
   test('respects reduced motion: no transform on press, but still shows a filter change', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');

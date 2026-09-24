@@ -3,6 +3,7 @@ import { mockGoogleBooksSearch } from './support/mock-google-books';
 import { mockGoogleAuth } from './support/mock-google-auth';
 
 test.describe('book search', () => {
+  // covers: book-search > Filter section content > Filter section renders on load
   test('the filter section is visible on load', async ({ page }) => {
     await page.goto('/');
 
@@ -10,6 +11,7 @@ test.describe('book search', () => {
     await expect(page.locator('.search-button')).toBeVisible();
   });
 
+  // covers: book-search > Search button disabled for invalid or in-flight state > Empty input disables search
   test('the search button is disabled for empty/whitespace input, enabled once text is entered', async ({
     page,
   }) => {
@@ -25,6 +27,9 @@ test.describe('book search', () => {
     await expect(button).toBeEnabled();
   });
 
+  // covers: book-search > Search triggers Google Books API request > Search button sends the entered query
+  // covers: book-search > Search triggers Google Books API request > ISBN-formatted input queries by ISBN
+  // covers: book-search > Search triggers Google Books API request > Non-ISBN input queries generally
   test('an ISBN-formatted query sends an isbn: prefixed request; non-ISBN text sends the raw text', async ({
     page,
   }) => {
@@ -48,6 +53,8 @@ test.describe('book search', () => {
     await expect.poll(() => new URL(capturedUrl).searchParams.get('q')).toBe('Faust Goethe');
   });
 
+  // covers: book-search > Search button disabled for invalid or in-flight state > In-flight request disables search
+  // covers: book-search > Request status feedback > Loading state shown during request
   test('shows a loading indicator and disables the button while a request is in flight', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: [{ title: 'Dune' }], delayMs: 500 });
     await page.goto('/');
@@ -59,6 +66,9 @@ test.describe('book search', () => {
     await expect(page.locator('.search-button')).toBeDisabled();
   });
 
+  // covers: book-search > Search results list > Multiple matches render as a vertical list
+  // covers: book-search > Search results list > Missing attributes are omitted gracefully per book
+  // covers: book-search > Result card layout > Found book renders inside a card
   test('renders one card per result, omitting missing attributes with no placeholder', async ({ page }) => {
     await mockGoogleBooksSearch(page, {
       items: [
@@ -78,6 +88,8 @@ test.describe('book search', () => {
     await expect(cards.nth(1).locator('.book-attribute')).toHaveCount(1);
   });
 
+  // covers: book-search > Book cover image > Cover image displayed when available
+  // covers: book-search > Book cover image > No image slot when cover is unavailable
   test('shows a cover image when present, no image element when absent', async ({ page }) => {
     await mockGoogleBooksSearch(page, {
       items: [
@@ -94,6 +106,9 @@ test.describe('book search', () => {
     await expect(cards.nth(1).locator('.book-cover')).toHaveCount(0);
   });
 
+  // covers: book-search > Average rating display > Rating displayed when available
+  // covers: book-search > Average rating display > Rating rounds to the nearest whole star
+  // covers: book-search > Average rating display > No rating indicator when rating data is absent
   test('shows the star rating and ratings count when present, nothing when absent', async ({ page }) => {
     await mockGoogleBooksSearch(page, {
       items: [
@@ -147,6 +162,12 @@ test.describe('book search', () => {
     expect(renderedRatio).toBeCloseTo(naturalRatio, 1);
   });
 
+  // covers: book-search > Results pagination > Pagination controls shown when more results exist
+  // covers: book-search > Results pagination > Number of overall pages in Pagination controls shown when more results exist
+  // covers: book-search > Results pagination > Previous control disabled on the first page
+  // covers: book-search > Results pagination > Next control disabled on the last page
+  // covers: book-search > Results pagination > Next page shows the next set of results
+  // covers: book-search > Results pagination > Previous page shows the prior set of results
   test('shows pagination controls only when there are more than 10 results, and Next/Previous work', async ({
     page,
   }) => {
@@ -169,6 +190,7 @@ test.describe('book search', () => {
     await expect(page.locator('.pagination-button').nth(1)).toBeDisabled();
   });
 
+  // covers: book-search > Results pagination > Pagination controls hidden when everything fits on one page
   test('shows no pagination controls when 10 or fewer results match', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: [{ title: 'Dune' }], totalItems: 1 });
     await page.goto('/');
@@ -179,6 +201,8 @@ test.describe('book search', () => {
     await expect(page.locator('.pagination')).toHaveCount(0);
   });
 
+  // covers: book-search > Book not found message > No matching volume displays not-found message
+  // covers: book-search > Request status feedback > No result data rendered on success
   test('shows "Book not found" with no attribute data when no volumes match', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: [] });
     await page.goto('/');
@@ -189,6 +213,7 @@ test.describe('book search', () => {
     await expect(page.locator('.book-card')).toHaveCount(0);
   });
 
+  // covers: book-search > Request status feedback > Error shown on request failure
   test('shows a visible error message when the request fails', async ({ page }) => {
     await mockGoogleBooksSearch(page, 'error');
     await page.goto('/');
@@ -198,6 +223,8 @@ test.describe('book search', () => {
     await expect(page.locator('.status-error')).toBeVisible();
   });
 
+  // covers: book-search > Add to cart button on result card > Add to cart button hidden when signed out
+  // covers: book-search > Add to cart button on result card > Add to cart button visible on found book
   test('the "Add to cart" button is absent when signed out and present when signed in', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: [{ title: 'Dune' }] });
     await page.goto('/');
@@ -216,6 +243,9 @@ test.describe('book search', () => {
     await expect(page.locator('.add-to-cart-button')).toBeVisible();
   });
 
+  // covers: book-search > Per-book cart quantity badge on result card > Badge hidden when the book is not in the cart
+  // covers: book-search > Per-book cart quantity badge on result card > Badge shows the current count after the book is added
+  // covers: book-search > Per-book cart quantity badge on result card > Badge count increases with each activation
   test('the cart quantity badge is hidden until the book is added, then tracks the count', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: [{ title: 'Dune' }] });
     await mockGoogleAuth(page, 'success');

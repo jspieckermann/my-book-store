@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --coverage",
     "e2e": "playwright test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "trace": "node scripts/generate-trace-matrix.mjs"
   },
   "private": true,
   "packageManager": "npm@11.19.0",

@@ -16,12 +16,15 @@ async function addBookToCart(page: Page, title = 'Dune'): Promise<void> {
 }
 
 test.describe('shopping cart', () => {
+  // covers: shopping-cart > Cart icon with count badge > Cart icon hidden when signed out
   test('the cart icon is absent when signed out', async ({ page }) => {
     await page.goto('/');
 
     await expect(page.locator('.cart')).toHaveCount(0);
   });
 
+  // covers: shopping-cart > Cart icon with count badge > Icon visible with no badge when cart is empty
+  // covers: shopping-cart > Cart icon links to the cart page when non-empty > Cart icon is not interactive when empty
   test('shows a non-interactive cart icon with no badge when signed in and the cart is empty', async ({
     page,
   }) => {
@@ -34,6 +37,9 @@ test.describe('shopping cart', () => {
     await expect(cart).not.toHaveAttribute('href', /.+/);
   });
 
+  // covers: shopping-cart > Cart icon with count badge > Badge shows current count after items are added
+  // covers: shopping-cart > Cart icon links to the cart page when non-empty > Cart icon navigates to the cart page when non-empty
+  // covers: shopping-cart > Add book to cart > Adding a book increments the count
   test('adding a book updates the badge and turns the cart icon into a link', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
@@ -44,6 +50,7 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.cart')).toHaveAttribute('href', '/cart');
   });
 
+  // covers: shopping-cart > Cart page shows added books > Cart page lists the books in the cart
   test('the cart page lists added books without an "Add to cart" control', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
@@ -56,6 +63,7 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.add-to-cart-button')).toHaveCount(0);
   });
 
+  // covers: shopping-cart > PayPal-styled payment button > Payment button visible below the cart list
   test('shows the PayPal-styled button only when the cart has items', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
@@ -65,6 +73,8 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.paypal-button')).toBeVisible();
   });
 
+  // covers: shopping-cart > PayPal-styled payment button > Payment button hidden when cart is empty
+  // covers: shopping-cart > Cart page shows added books > Cart page shows an empty-cart message
   test('hides the PayPal-styled button and shows an empty-cart message when the cart is empty', async ({
     page,
   }) => {
@@ -77,6 +87,8 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.status')).toContainText('Your cart is empty');
   });
 
+  // covers: shopping-cart > Remove book from cart > Activating delete removes that book
+  // covers: shopping-cart > Remove book from cart > Removing the last book shows the empty-cart message
   test('deleting a book removes it, decreases the badge, and the last removal shows the empty-cart message', async ({
     page,
   }) => {
@@ -93,6 +105,8 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.status')).toContainText('Your cart is empty');
   });
 
+  // covers: shopping-cart > Add book to cart > Adding the same book multiple times increments each time
+  // covers: shopping-cart > Remove book from cart > Removing one of several identical books removes only that card
   test('deleting one of two identical books removes only that card', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
@@ -108,6 +122,9 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.book-card')).toHaveCount(1);
   });
 
+  // covers: shopping-cart > Cart order summary > Summary shows item count and total price
+  // covers: shopping-cart > Cart order summary > Summary updates when the cart contents change
+  // covers: shopping-cart > Cart order summary > No summary shown when cart is empty
   test('the payment section summary updates the item count and total price as items are added/removed', async ({
     page,
   }) => {
@@ -137,6 +154,9 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.payment-section')).toHaveCount(0);
   });
 
+  // covers: breadcrumb-navigation > Breadcrumb trail shown above the page title > Breadcrumb trail appears above the page title
+  // covers: breadcrumb-navigation > Activating the breadcrumb's main-page link navigates there > Activating the main-page link navigates to the main page
+  // covers: shopping-cart > Return to the main page from the cart page > Back control returns to the main page
   test('the breadcrumb returns to the main page', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
@@ -153,6 +173,7 @@ test.describe('shopping cart', () => {
     await expect(page.locator('.page-title')).toHaveText('Search');
   });
 
+  // covers: shopping-cart > Cart cleared on sign-out > Signing out clears the cart count
   test('signing out clears the cart', async ({ page }) => {
     await mockGoogleAuth(page, 'success');
     await signIn(page);
