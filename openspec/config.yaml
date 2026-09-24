@@ -6,7 +6,7 @@ operations:
       - Unit-Tests are written and running with a line coverage of 85%
       - e2e-Tests are written and running covering most of the requirements (keep it simple)
       - Linting (npm run lint) passes with zero errors; warnings are non-blocking
-      - "openspec/trace-matrix.md is regenerated via npm run trace, with any new e2e test annotated with a // covers: <capability> > <requirement> > <scenario> comment"
+      - "Every new or changed e2e test has an accurate // covers: <capability> > <requirement> > <scenario> comment directly above it, and openspec/trace-matrix.md is regenerated via npm run trace to reflect it"
   archive:
     guidance:
       - commit to git and name the commit comment <name of the change> where <name of the change> is the placeholder for the current change
