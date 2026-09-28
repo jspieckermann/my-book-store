@@ -1,8 +1,3 @@
-/*
- * Deliberate exception to this app's theming-token-only convention, matching
- * promo-card.css — see design.md in add-flashy-ad-section.
- */
-
 :host {
   display: block;
 }
@@ -13,17 +8,13 @@
   gap: clamp(0.125rem, 0.4vw, 0.25rem);
 }
 
+/* Plain, same as book-search.css's .page-title — only the cards/badges below stay garish. */
 .promo-headline {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: clamp(0.875rem, 2.25vw, 1.125rem);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-heading);
   color: var(--color-text);
-  -webkit-text-stroke: 0.4px #ff2d78;
-  paint-order: stroke fill;
-  text-shadow: 0 0 0.5rem rgba(255, 45, 120, 0.6);
 }
 
 .promo-row {

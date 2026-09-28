@@ -350,7 +350,7 @@ describe('BookSearch', () => {
     expect(el.querySelector('app-promo-section')).toBeTruthy();
   });
 
-  it('hides the promo section while a search is loading', () => {
+  it('shows the promo section while a search is loading', () => {
     const fixture = createFixture();
     const component = fixture.componentInstance;
     setQuery(component, 'Dune');
@@ -358,10 +358,10 @@ describe('BookSearch', () => {
     component['search']();
     fixture.detectChanges();
 
-    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeTruthy();
   });
 
-  it('hides the promo section when a search fails', () => {
+  it('shows the promo section when a search fails', () => {
     const fixture = createFixture();
     const component = fixture.componentInstance;
     setQuery(component, 'Dune');
@@ -370,10 +370,10 @@ describe('BookSearch', () => {
     searchResult$.error(new Error('boom'));
     fixture.detectChanges();
 
-    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeTruthy();
   });
 
-  it('hides the promo section when results are found', () => {
+  it('shows the promo section when results are found', () => {
     const fixture = createFixture();
     const component = fixture.componentInstance;
     setQuery(component, 'Dune');
@@ -382,6 +382,30 @@ describe('BookSearch', () => {
     searchResult$.next({ books: [{ title: 'Dune', price: 24.99 }], totalItems: 1 });
     fixture.detectChanges();
 
-    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeTruthy();
+  });
+
+  it('positions the promo section after the results list and pagination controls', () => {
+    const fixture = createFixture();
+    const component = fixture.componentInstance;
+    setQuery(component, 'Dune');
+    component['search']();
+
+    const books = Array.from({ length: 11 }, (_, i) => ({ title: `Dune ${i}`, price: 24.99 }));
+    searchResult$.next({ books, totalItems: 11 });
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const resultsList = el.querySelector('.results-list');
+    const pagination = el.querySelector('.pagination');
+    const promoSection = el.querySelector('app-promo-section');
+    expect(resultsList).toBeTruthy();
+    expect(pagination).toBeTruthy();
+    expect(promoSection).toBeTruthy();
+
+    const position = resultsList!.compareDocumentPosition(promoSection!);
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const paginationPosition = pagination!.compareDocumentPosition(promoSection!);
+    expect(paginationPosition & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

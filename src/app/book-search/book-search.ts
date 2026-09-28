@@ -41,10 +41,6 @@ export class BookSearch {
     const current = this.state();
     return current.kind === 'found' ? Math.ceil(current.totalItems / PAGE_SIZE) : 0;
   });
-  protected readonly showPromo = computed(() => {
-    const kind = this.state().kind;
-    return kind === 'idle' || kind === 'not-found';
-  });
 
   constructor() {
     effect(() => {

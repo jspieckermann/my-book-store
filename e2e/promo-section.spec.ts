@@ -55,7 +55,7 @@ async function mockSearchAndPromo(
 }
 
 test.describe('promo section', () => {
-  // covers: promo-section > Promo section shown when there is nothing else to show > Promo section shown before any search
+  // covers: promo-section > Promo section always shown on the search page > Promo section shown before any search
   test('is visible on the search page before any search has been performed', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: COVER_BOOKS });
     await page.goto('/');
@@ -63,7 +63,7 @@ test.describe('promo section', () => {
     await expect(page.locator('.promo-section')).toBeVisible();
   });
 
-  // covers: promo-section > Promo section shown when there is nothing else to show > Promo section shown alongside "Book not found"
+  // covers: promo-section > Promo section always shown on the search page > Promo section shown alongside "Book not found"
   test('is visible alongside the "Book not found" message', async ({ page }) => {
     await mockSearchAndPromo(page, {
       searchQuery: 'zzzznotfound',
@@ -80,8 +80,8 @@ test.describe('promo section', () => {
     await expect(page.locator('.promo-section')).toBeVisible();
   });
 
-  // covers: promo-section > Promo section shown when there is nothing else to show > Promo section hidden while searching
-  test('is hidden while a search is in progress', async ({ page }) => {
+  // covers: promo-section > Promo section always shown on the search page > Promo section shown while a search is in progress
+  test('is visible while a search is in progress', async ({ page }) => {
     await mockGoogleBooksSearch(page, { items: COVER_BOOKS, delayMs: 800 });
     await page.goto('/');
     await expect(page.locator('.promo-section')).toBeVisible();
@@ -90,11 +90,11 @@ test.describe('promo section', () => {
     await page.locator('.search-button').click();
 
     await expect(page.locator('.status-loading')).toBeVisible();
-    await expect(page.locator('.promo-section')).toHaveCount(0);
+    await expect(page.locator('.promo-section')).toBeVisible();
   });
 
-  // covers: promo-section > Promo section shown when there is nothing else to show > Promo section hidden on search failure
-  test('is hidden after a search fails', async ({ page }) => {
+  // covers: promo-section > Promo section always shown on the search page > Promo section shown when a search fails
+  test('is visible after a search fails', async ({ page }) => {
     await mockSearchAndPromo(page, {
       searchQuery: 'boom',
       search: 'error',
@@ -107,11 +107,11 @@ test.describe('promo section', () => {
     await page.locator('.search-button').click();
 
     await expect(page.locator('.status-error')).toBeVisible();
-    await expect(page.locator('.promo-section')).toHaveCount(0);
+    await expect(page.locator('.promo-section')).toBeVisible();
   });
 
-  // covers: promo-section > Promo section shown when there is nothing else to show > Promo section hidden when results are found
-  test('is hidden when a search finds results', async ({ page }) => {
+  // covers: promo-section > Promo section always shown on the search page > Promo section shown alongside search results
+  test('is visible when a search finds results', async ({ page }) => {
     await mockSearchAndPromo(page, {
       searchQuery: 'Dune',
       search: { items: [{ title: 'Dune' }] },
@@ -124,7 +124,30 @@ test.describe('promo section', () => {
     await page.locator('.search-button').click();
 
     await expect(page.locator('.results-list .book-card')).toBeVisible();
-    await expect(page.locator('.promo-section')).toHaveCount(0);
+    await expect(page.locator('.promo-section')).toBeVisible();
+  });
+
+  // covers: promo-section > Promo section always shown on the search page > Promo section positioned below the results list and pagination
+  test('is positioned below the results list and pagination controls', async ({ page }) => {
+    await mockSearchAndPromo(page, {
+      searchQuery: 'Dune',
+      search: { items: Array.from({ length: 11 }, (_, i) => ({ title: `Dune ${i}` })) },
+      promo: { items: COVER_BOOKS },
+    });
+    await page.goto('/');
+
+    await page.locator('.search-input').fill('Dune');
+    await page.locator('.search-button').click();
+
+    await expect(page.locator('.pagination')).toBeVisible();
+    await expect(page.locator('.promo-section')).toBeVisible();
+
+    const resultsListBox = (await page.locator('.results-list').boundingBox())!;
+    const paginationBox = (await page.locator('.pagination').boundingBox())!;
+    const promoBox = (await page.locator('.promo-section').boundingBox())!;
+
+    expect(promoBox.y).toBeGreaterThan(resultsListBox.y + resultsListBox.height);
+    expect(promoBox.y).toBeGreaterThan(paginationBox.y + paginationBox.height);
   });
 
   // covers: promo-section > Random books about AI engineering with a real cover image > Selected books all have a cover image
