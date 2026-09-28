@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, signal, untracked } from '@angular
 import { FormsModule } from '@angular/forms';
 import { BookSummary, GoogleBooks } from './google-books';
 import { BookCard } from '../book-card/book-card';
+import { PromoSection } from '../promo-section/promo-section';
 import { Language } from '../language/language';
 
 const PAGE_SIZE = 10;
@@ -14,7 +15,7 @@ type SearchState =
   | { kind: 'found'; books: BookSummary[]; totalItems: number };
 
 @Component({
-  imports: [FormsModule, BookCard],
+  imports: [FormsModule, BookCard, PromoSection],
   selector: 'app-book-search',
   styleUrl: './book-search.css',
   templateUrl: './book-search.html',
@@ -39,6 +40,10 @@ export class BookSearch {
   protected readonly totalPages = computed(() => {
     const current = this.state();
     return current.kind === 'found' ? Math.ceil(current.totalItems / PAGE_SIZE) : 0;
+  });
+  protected readonly showPromo = computed(() => {
+    const kind = this.state().kind;
+    return kind === 'idle' || kind === 'not-found';
   });
 
   constructor() {

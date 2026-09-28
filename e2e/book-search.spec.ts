@@ -33,9 +33,12 @@ test.describe('book search', () => {
   test('an ISBN-formatted query sends an isbn: prefixed request; non-ISBN text sends the raw text', async ({
     page,
   }) => {
-    let capturedUrl = '';
+    // A zero-result response puts the page in the "not-found" state, which also shows the
+    // promo section — it fires its own background request to this same endpoint, so every
+    // matching `q` seen is recorded rather than overwriting a single "last request" value.
+    const capturedQueries: (string | null)[] = [];
     await page.route('**/books/v1/volumes**', async (route) => {
-      capturedUrl = route.request().url();
+      capturedQueries.push(new URL(route.request().url()).searchParams.get('q'));
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -46,11 +49,11 @@ test.describe('book search', () => {
 
     await page.locator('.search-input').fill('9783140225915');
     await page.locator('.search-button').click();
-    await expect.poll(() => new URL(capturedUrl).searchParams.get('q')).toBe('isbn:9783140225915');
+    await expect.poll(() => capturedQueries).toContain('isbn:9783140225915');
 
     await page.locator('.search-input').fill('Faust Goethe');
     await page.locator('.search-button').click();
-    await expect.poll(() => new URL(capturedUrl).searchParams.get('q')).toBe('Faust Goethe');
+    await expect.poll(() => capturedQueries).toContain('Faust Goethe');
   });
 
   // covers: book-search > Search button disabled for invalid or in-flight state > In-flight request disables search

@@ -27,6 +27,10 @@
     <p class="status status-not-found">{{ language.translate('bookSearch.bookNotFound') }}</p>
   }
 
+  @if (showPromo()) {
+    <app-promo-section />
+  }
+
   @if (state(); as current) {
     @if (current.kind === 'found') {
       <ul class="results-list">

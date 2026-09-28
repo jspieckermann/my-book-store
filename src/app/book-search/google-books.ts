@@ -8,6 +8,19 @@ const VOLUMES_ENDPOINT = 'https://www.googleapis.com/books/v1/volumes';
 const PAGE_SIZE = 10;
 const MIN_PRICE = 10;
 const MAX_PRICE = 70.5;
+const RANDOM_MAX_RESULTS = 40;
+const RANDOM_QUERY_POOL = [
+  'artificial intelligence',
+  'machine learning',
+  'deep learning',
+  'neural networks',
+  'large language models',
+  'generative AI',
+  'AI engineering',
+  'MLOps',
+  'natural language processing',
+  'computer vision',
+];
 
 function isIsbnFormat(query: string): boolean {
   const cleaned = query.replace(/[-\s]/g, '');
@@ -100,11 +113,16 @@ export class GoogleBooks {
     );
   }
 
-  private fetchVolumes(q: string, page: number): Observable<SearchResultsPage> {
+  searchRandom(): Observable<SearchResultsPage> {
+    const q = RANDOM_QUERY_POOL[Math.floor(Math.random() * RANDOM_QUERY_POOL.length)];
+    return this.fetchVolumes(q, 1, RANDOM_MAX_RESULTS);
+  }
+
+  private fetchVolumes(q: string, page: number, maxResults: number = PAGE_SIZE): Observable<SearchResultsPage> {
     const params: Record<string, string> = {
       q,
       startIndex: String((page - 1) * PAGE_SIZE),
-      maxResults: String(PAGE_SIZE),
+      maxResults: String(maxResults),
       langRestrict: this.language.current(),
     };
     if (environment.googleBooksApiKey) {

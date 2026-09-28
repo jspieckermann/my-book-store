@@ -1,0 +1,11 @@
+@if (books().length > 0) {
+  <section class="promo-section">
+    <h2 class="promo-headline">{{ language.translate('promoSection.headline') }}</h2>
+
+    <div class="promo-row" #row>
+      @for (book of books(); track book; let i = $index) {
+        <app-promo-card [book]="book" [class.promo-card-hidden]="i >= visibleCount()" />
+      }
+    </div>
+  </section>
+}

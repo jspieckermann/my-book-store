@@ -1,0 +1,52 @@
+/*
+ * Deliberate exception to this app's theming-token-only convention, matching
+ * promo-card.css — see design.md in add-flashy-ad-section.
+ */
+
+:host {
+  display: block;
+}
+
+.promo-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.125rem, 0.4vw, 0.25rem);
+}
+
+.promo-headline {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.875rem, 2.25vw, 1.125rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  -webkit-text-stroke: 0.4px #ff2d78;
+  paint-order: stroke fill;
+  text-shadow: 0 0 0.5rem rgba(255, 45, 120, 0.6);
+}
+
+.promo-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  /*
+   * promo-card.css's discount badge pokes outside its card's own box (negative
+   * top/right offset, plus rotation and a pulse-animation scale). Without this
+   * padding, `overflow: hidden` above clips that badge even on cards that
+   * otherwise fit entirely — not just cards intentionally cut off by width.
+   */
+  padding: 1.5rem 1.5rem 0 0;
+}
+
+/*
+ * A card that doesn't fully fit the row's width is hidden entirely rather than left
+ * partially clipped by `.promo-row`'s `overflow: hidden` above — see promo-section.ts,
+ * which measures each card against the row's bounds at render time and on resize.
+ * `visibility: hidden` (not `display: none`) keeps its flex slot so hiding it doesn't
+ * shift the cards before it.
+ */
+.promo-card-hidden {
+  visibility: hidden;
+}

@@ -102,6 +102,11 @@
   color: var(--color-text-muted);
 }
 
+/* Extra breathing room above the promo section, beyond .book-search's base gap. */
+app-promo-section {
+  margin-top: clamp(1rem, 3vw, 1.5rem);
+}
+
 .results-list {
   display: flex;
   flex-direction: column;

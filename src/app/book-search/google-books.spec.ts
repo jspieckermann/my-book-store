@@ -237,6 +237,40 @@ describe('GoogleBooks', () => {
     }
   });
 
+  it('searchRandom queries one of the curated pool terms with a larger maxResults', () => {
+    const pool = [
+      'artificial intelligence',
+      'machine learning',
+      'deep learning',
+      'neural networks',
+      'large language models',
+      'generative AI',
+      'AI engineering',
+      'MLOps',
+      'natural language processing',
+      'computer vision',
+    ];
+
+    googleBooks.searchRandom().subscribe();
+
+    const req = httpMock.expectOne(() => true);
+    expect(pool).toContain(req.request.params.get('q'));
+    expect(req.request.params.get('maxResults')).toBe('40');
+    req.flush({ items: [], totalItems: 0 });
+  });
+
+  it('searchRandom includes langRestrict and the configured API key, same as search()', () => {
+    environment.googleBooksApiKey = 'test-api-key';
+    TestBed.inject(Language).setLanguage('de');
+
+    googleBooks.searchRandom().subscribe();
+
+    const req = httpMock.expectOne(() => true);
+    expect(req.request.params.get('langRestrict')).toBe('de');
+    expect(req.request.params.get('key')).toBe('test-api-key');
+    req.flush({ items: [], totalItems: 0 });
+  });
+
   it('maps a response with no items to an empty result', () => {
     let result: { books: unknown[]; totalItems: number } | undefined;
     googleBooks.search('anything', 1).subscribe((page) => (result = page));

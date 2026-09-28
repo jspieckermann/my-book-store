@@ -36,9 +36,10 @@ describe('BookSearch', () => {
   function createFixture() {
     searchResult$ = new Subject<SearchResultsPage>();
     searchMock = vi.fn(() => searchResult$);
+    const searchRandomMock = vi.fn(() => new Subject<SearchResultsPage>());
     TestBed.configureTestingModule({
       providers: [
-        { provide: GoogleBooks, useValue: { search: searchMock } },
+        { provide: GoogleBooks, useValue: { search: searchMock, searchRandom: searchRandomMock } },
         { provide: Cart, useValue: { add: vi.fn(), remove: vi.fn() } },
         { provide: GoogleAuth, useValue: { user: signal(null), login: vi.fn(), logout: vi.fn() } },
       ],
@@ -327,5 +328,60 @@ describe('BookSearch', () => {
     fixture.detectChanges();
 
     expect(el.querySelector('.pagination-page')?.textContent).toContain('Page 1 of 2');
+  });
+
+  it('shows the promo section before any search has been performed', () => {
+    const fixture = createFixture();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeTruthy();
+  });
+
+  it('shows the promo section alongside the not-found message', () => {
+    const fixture = createFixture();
+    const component = fixture.componentInstance;
+    setQuery(component, 'zzzzz');
+    component['search']();
+
+    searchResult$.next({ books: [], totalItems: 0 });
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.status-not-found')).toBeTruthy();
+    expect(el.querySelector('app-promo-section')).toBeTruthy();
+  });
+
+  it('hides the promo section while a search is loading', () => {
+    const fixture = createFixture();
+    const component = fixture.componentInstance;
+    setQuery(component, 'Dune');
+
+    component['search']();
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeNull();
+  });
+
+  it('hides the promo section when a search fails', () => {
+    const fixture = createFixture();
+    const component = fixture.componentInstance;
+    setQuery(component, 'Dune');
+    component['search']();
+
+    searchResult$.error(new Error('boom'));
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeNull();
+  });
+
+  it('hides the promo section when results are found', () => {
+    const fixture = createFixture();
+    const component = fixture.componentInstance;
+    setQuery(component, 'Dune');
+    component['search']();
+
+    searchResult$.next({ books: [{ title: 'Dune', price: 24.99 }], totalItems: 1 });
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-promo-section')).toBeNull();
   });
 });

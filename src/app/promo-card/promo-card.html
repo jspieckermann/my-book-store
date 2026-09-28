@@ -1,0 +1,36 @@
+<div class="promo-cover-slot">
+  @if (book().coverImageUrl) {
+    <img class="promo-cover" [src]="book().coverImageUrl" [alt]="book().title || ''" />
+  }
+</div>
+<span class="promo-discount-badge">{{ discountBadgeText() }}</span>
+<p class="promo-title">{{ book().title }}</p>
+<p class="promo-price">
+  <span class="promo-price-original">{{ formattedOriginalPrice() }}</span>
+  <span class="promo-price-now">{{ formattedNowPrice() }}</span>
+</p>
+@if (googleAuth.user()) {
+  <button
+    type="button"
+    class="promo-add-to-cart-button"
+    [attr.aria-label]="language.translate('bookCard.addToCart')"
+    (click)="addToCart()"
+  >
+    <svg
+      class="action-icon"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      role="img"
+      [attr.aria-label]="language.translate('bookCard.addToCart')"
+    >
+      <circle cx="9" cy="20" r="1" />
+      <circle cx="18" cy="20" r="1" />
+      <path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L21 8H6" />
+    </svg>
+  </button>
+}

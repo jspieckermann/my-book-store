@@ -1,0 +1,145 @@
+/*
+ * Deliberate, scoped exception to this app's theming-token-only convention for the
+ * pink border/badge/glow accents below — the point of this card is to look like a
+ * garish, off-brand ad, clashing with the rest of the app's calm dark palette. See
+ * design.md in add-flashy-ad-section, and the same precedent already set by the
+ * PayPal button in cart-page.css. The card's own background stays on-token, matching
+ * BookCard's (`var(--color-background)`), per a follow-up request.
+ */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  position: relative;
+  flex: 0 0 10rem;
+  min-width: 10rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 0.5px solid #ff2d78;
+  background-color: var(--color-background);
+  box-shadow: 0 0 0.75rem rgba(255, 45, 120, 0.45);
+  text-align: center;
+}
+
+.promo-cover-slot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+}
+
+.promo-cover {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.375rem;
+  object-fit: contain;
+}
+
+.promo-discount-badge {
+  position: absolute;
+  top: -0.625rem;
+  right: -0.625rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background-color: #fff200;
+  color: #2a0e1f;
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  font-weight: 800;
+  transform: rotate(12deg);
+  animation: promo-badge-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes promo-badge-pulse {
+  0%,
+  100% {
+    transform: rotate(12deg) scale(1);
+  }
+  50% {
+    transform: rotate(12deg) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-discount-badge {
+    animation: none;
+  }
+}
+
+.promo-title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  font-weight: var(--font-weight-heading);
+  line-height: var(--text-small--line-height);
+  color: #ffffff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /*
+   * Always reserve room for 2 lines, even when the title only needs 1, so the
+   * price and add-to-cart button below start at the same height on every card
+   * regardless of how many lines a given title wraps to.
+   */
+  min-height: calc(var(--text-small) * var(--text-small--line-height) * 2);
+}
+
+.promo-price {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.promo-price-original {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  color: #c98ba3;
+  text-decoration: line-through;
+}
+
+.promo-price-now {
+  font-family: var(--font-sans);
+  font-size: clamp(1.0625rem, 3vw, 1.25rem);
+  font-weight: 800;
+  color: #fff200;
+}
+
+.promo-add-to-cart-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 0;
+  background: linear-gradient(135deg, #ff2d78, #ff7a2d);
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.promo-add-to-cart-button:hover {
+  filter: brightness(1.15);
+}
+
+.promo-add-to-cart-button:active {
+  filter: brightness(0.9);
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-add-to-cart-button:active {
+    transform: none;
+  }
+}
+
+.action-icon {
+  width: clamp(1.25rem, 2.5vw, 1.5rem);
+  height: clamp(1.25rem, 2.5vw, 1.5rem);
+}
