@@ -36,4 +36,19 @@ describe('Footer', () => {
 
     expect(link?.textContent?.trim()).toBe('Impressum');
   });
+
+  it('renders a link to the Legal page, with text following the selected language', () => {
+    const fixture = createFixture();
+    const el = fixture.nativeElement as HTMLElement;
+
+    const link = el.querySelector<HTMLAnchorElement>('.legal-link');
+    expect(link).toBeTruthy();
+    expect(link?.textContent?.trim()).toBe('Legal');
+    expect(link?.getAttribute('href')).toBe('/legal');
+
+    TestBed.inject(Language).setLanguage('de');
+    fixture.detectChanges();
+
+    expect(link?.textContent?.trim()).toBe('Rechtliches');
+  });
 });

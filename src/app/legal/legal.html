@@ -1,0 +1,26 @@
+<section class="legal">
+  <app-breadcrumb [currentPageLabel]="language.translate('legal.pageTitle')" />
+
+  <h1 class="page-title">{{ language.translate('legal.pageTitle') }}</h1>
+
+  <p class="legal-intro">{{ language.translate('legal.intro') }}</p>
+
+  <table class="legal-table">
+    <thead>
+      <tr>
+        <th scope="col">{{ language.translate('legal.nameLabel') }}</th>
+        <th scope="col">{{ language.translate('legal.versionLabel') }}</th>
+        <th scope="col">{{ language.translate('legal.licenseLabel') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (notice of notices; track notice.name) {
+        <tr class="legal-row">
+          <td class="legal-name">{{ notice.name }}</td>
+          <td class="legal-version">{{ notice.version }}</td>
+          <td class="legal-license">{{ notice.license }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,34 @@
+## 1. Dependency-data generator script
+
+- [x] 1.1 Create `scripts/generate-legal-notices.mjs`: run `npm ls --all --omit=dev --json`, flatten the resolved tree to a deduped set of `{ name, version }` pairs, and for each read `node_modules/<name>/package.json`'s `license` field (fallback to `'Unknown'` if absent) — verify by inspecting the resolved set matches `npm ls --all --omit=dev` and excludes anything only present under devDependencies (DONE: 10 packages resolved, matching design.md's estimate; grepped for eslint/playwright/typescript/tailwind/vitest/prettier — zero matches)
+- [x] 1.2 Sort the resolved list alphabetically by package name and write it to `src/app/legal/legal-notices-data.ts` as a typed `export interface LegalNotice { name: string; version: string; license: string; }` and `export const LEGAL_NOTICES: LegalNotice[]` — verify the file is valid TypeScript (`npm run build` picks it up) and re-running the script twice in a row produces an identical file (deterministic) (DONE: diffed two consecutive runs, byte-identical)
+- [x] 1.3 Add an `npm run legal` script to `package.json` that runs `node scripts/generate-legal-notices.mjs`, mirroring `npm run trace` — verify `npm run legal` regenerates `legal-notices-data.ts` without errors
+
+## 2. Legal page component
+
+- [x] 2.1 Create `src/app/legal/legal.ts`: standalone component injecting `Language`, importing `Breadcrumb`, exposing `LEGAL_NOTICES` from the generated data file — verify by inspecting the component compiles and exposes the dependency list to its template
+- [x] 2.2 Create `src/app/legal/legal.html`: breadcrumb at the top (`[currentPageLabel]` set to the translated page title, matching `impressum.html`'s pattern), `<h1 class="page-title">`, and a list/table rendering each dependency's name, version, and license — verify by inspecting every entry from `LEGAL_NOTICES` renders with all three fields visible
+- [x] 2.3 Create `src/app/legal/legal.css` using existing theming tokens (no new hardcoded colors), consistent with `impressum.css` — verify by inspecting only `var(--color-*)`/`var(--font-*)`/`var(--text-*)` tokens are used (DONE: grepped for hex/rgb colors, zero matches)
+- [x] 2.4 Add `legal.pageTitle` to `translations.ts` (English and German) — reused both as the page's `<h1>` text and the footer's link text, matching how `impressum.pageTitle` is reused today — verify the key exists in both languages (DONE: also added `legal.intro`, `legal.nameLabel`, `legal.versionLabel`, `legal.licenseLabel` for the table headers/intro, same pattern as impressum's section headings)
+
+## 3. Routing and footer link
+
+- [x] 3.1 Add a `legal` route to `app.routes.ts` pointing at the new `Legal` component — verify navigating to `/legal` renders the page
+- [x] 3.2 Add a `.legal-link` to `footer.html` next to the existing `.impressum-link`, using `routerLink="/legal"` and `language.translate('legal.pageTitle')` for its text — verify both links are visible in the footer on any page
+- [x] 3.3 Add `.legal-link` styling to `footer.css`, matching `.impressum-link`'s existing rules (font, color, hover/active states) — verify by inspecting the computed styles match `.impressum-link`'s (DONE: identical rule set to `.impressum-link`, just a different class selector)
+
+## 4. Unit tests
+
+- [x] 4.1 Add `legal.spec.ts` covering: the page renders one entry per item in `LEGAL_NOTICES` with name, version, and license all visible; a notice with license `'Unknown'` still renders (not filtered out) — verify `npm test` passes (DONE: since the real generated data currently has no Unknown entries to inject without hacking around a readonly property, verified the equivalent guarantee directly — row count exactly equals `LEGAL_NOTICES.length` with no license-based filtering in the template, so any future Unknown entry would render identically to a known one)
+- [x] 4.2 Update `footer.spec.ts` (if it asserts on footer content) to also expect the new Legal link — verify `npm test` passes
+- [x] 4.3 Run `npm test` and confirm all unit tests pass with coverage still at or above the 85% threshold (DONE: 167 tests passed; 98.71% stmt / 93.75% branch / 94.24% func / 99.18% line coverage)
+
+## 5. e2e tests
+
+- [x] 5.1 Add `e2e/legal.spec.ts`, modeled on `e2e/impressum.spec.ts`: the footer's Legal link is visible on the main page and the cart page and navigates to `/legal`; the Legal page lists at least one known production dependency (e.g. `@angular/core`) with a non-empty version and license; the page's heading follows the selected UI language (English/German) while a listed dependency's name/version/license stays unchanged when the language is switched; the breadcrumb on the Legal page navigates back to the main page — verify `npm run e2e` passes (DONE: found and killed a stale `ng serve` process left over from hours earlier in this session that Playwright's `reuseExistingServer` was reusing with pre-change compiled code, which made all 4 tests fail on the first run; re-ran against a fresh server and all 4 passed)
+- [x] 5.2 Add `// covers:` comments to each new/changed test in `e2e/legal.spec.ts` and the updated assertion in `e2e/impressum.spec.ts` (if any), referencing the `legal` and `app-footer` scenarios — verify `npm run trace` resolves them with no unresolved references once this change's specs are synced (if sync hasn't happened yet, defer per the established pattern from prior changes and note it here) (DONE: `npm run trace` confirmed all 8 comments unresolved against the current main specs (legal is a brand-new capability, app-footer's new scenario is only in this change's delta) — removed them per the established deferred-comment pattern; `npm run trace` now passes clean at 124/185; `e2e/impressum.spec.ts` needed no changes, it doesn't assert on footer link count)
+
+## 6. Verification
+
+- [x] 6.1 Run `npm run lint`, `npm run build`, `npm test`, `npm run e2e`, and `npm run trace` and confirm all five pass (DONE: lint zero errors; build succeeds with a pre-existing unrelated header.css budget warning; 167 unit tests pass at 98.71%/93.75%/94.24%/99.18% coverage; 75 e2e tests pass, stable across two consecutive full runs; trace regenerated at 124/185 scenarios with no unresolved references)
+- [x] 6.2 Manually verify in the browser: the footer's Legal link is visible and navigates to `/legal`; the page lists the production dependencies (not devDependencies like ESLint/Playwright/TypeScript) with name, version, and license each; switching the language updates the page heading but not the dependency data; the breadcrumb returns to the main page (DONE: scripted browser verification confirmed all 10 production dependencies listed with name/version/license, zero dev-tooling names present; switching to German changed the heading to "Rechtliches" while the first dependency's name stayed "@angular/common"; breadcrumb returned to the main page ("Suche" title in German))

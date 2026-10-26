@@ -9,7 +9,8 @@
     "test": "ng test --coverage",
     "e2e": "playwright test",
     "lint": "ng lint",
-    "trace": "node scripts/generate-trace-matrix.mjs"
+    "trace": "node scripts/generate-trace-matrix.mjs",
+    "legal": "node scripts/generate-legal-notices.mjs"
   },
   "private": true,
   "packageManager": "npm@11.19.0",

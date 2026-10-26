@@ -57,6 +57,11 @@ export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
     'impressum.liabilityLinksSubheading': 'Liability for Links',
     'impressum.liabilityLinksText':
       'This page contains links to external third-party websites over whose content we have no control. The respective provider is always responsible for the content of the linked pages.',
+    'legal.pageTitle': 'Legal',
+    'legal.intro': 'This app uses the following open-source software:',
+    'legal.nameLabel': 'Package',
+    'legal.versionLabel': 'Version',
+    'legal.licenseLabel': 'License',
   },
   de: {
     'header.bookLogo': 'Buch-Logo',
@@ -113,5 +118,10 @@ export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
     'impressum.liabilityLinksSubheading': 'Haftung für Links',
     'impressum.liabilityLinksText':
       'Diese Seite enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.',
+    'legal.pageTitle': 'Rechtliches',
+    'legal.intro': 'Diese App verwendet die folgende Open-Source-Software:',
+    'legal.nameLabel': 'Paket',
+    'legal.versionLabel': 'Version',
+    'legal.licenseLabel': 'Lizenz',
   },
 };

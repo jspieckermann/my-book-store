@@ -37,3 +37,22 @@
 .impressum-link:active {
   filter: brightness(0.9);
 }
+
+.legal-link {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  line-height: var(--text-small--line-height);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: filter 0.15s ease;
+}
+
+.legal-link:hover {
+  text-decoration: underline;
+  filter: brightness(1.3);
+}
+
+.legal-link:active {
+  filter: brightness(0.9);
+}
