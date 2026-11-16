@@ -4,6 +4,12 @@ A small Angular demo book store: search for books, sign in with Google, add them
 
 **The actual point of this project isn't the book store.** It exists to explore **Spec-Driven Development (SDD)** using **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** and **Claude Code**: every feature in this repo was proposed, specified, designed, and implemented through OpenSpec's propose → apply → archive workflow, with Claude Code doing the implementation against those specs. See [`openspec/specs/`](openspec/specs/) for the current behavior contracts and [`openspec/changes/archive/`](openspec/changes/archive/) for the full history of how each feature was specified before it was built.
 
+## Screenshots
+
+| Search results | "Always-on" promo section | Cart |
+| --- | --- | --- |
+| ![Search results](docs/screenshots/search-results.png) | ![Promo section](docs/screenshots/promo-section.png) | ![Cart page](docs/screenshots/cart-page.png) |
+
 ## Tech Stack
 
 - **[Angular 22](https://angular.dev/)** — standalone components, signals (`signal`/`computed`/`effect`), the new `@if`/`@for` control-flow syntax, zoneless change detection
