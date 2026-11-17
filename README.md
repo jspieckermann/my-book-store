@@ -79,9 +79,15 @@ A single-page Angular app with no backend of its own — both arrows below leave
 
 ## Development setup
 
-Copy `src/environments/environment.example.ts` to `src/environments/environment.ts` and fill in:
-- `googleBooksApiKey` — a Google Books API key (optional; the app works without one at a lower request quota)
-- `googleOAuthClientId` — a Google OAuth 2.0 Web Client ID (required for sign-in to work)
+> **⚠️ Required before running anything.** `src/environments/environment.ts` is gitignored and not part of this repo, but several core files (`google-books.ts`, `google-auth.ts`, ...) import it directly. Without it, `npm start`, `npm run build`, and `npm test` all fail immediately with a module-not-found error.
+
+1. Copy the example file:
+   ```bash
+   cp src/environments/environment.example.ts src/environments/environment.ts
+   ```
+2. Fill in its two values:
+   - `googleBooksApiKey` — a Google Books API key (optional; the app works without one, at a lower request quota)
+   - `googleOAuthClientId` — a Google OAuth 2.0 Web Client ID (required for sign-in to work)
 
 ## Development server
 
